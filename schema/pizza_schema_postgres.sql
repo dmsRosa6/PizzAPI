@@ -1,5 +1,3 @@
--- Cleaned-up Pizza Shop Database Schema with Triggers, Views, Promotions, and Access Control
-
 -- =====================================================================
 -- TABLE DEFINITIONS
 -- =====================================================================
@@ -7,7 +5,7 @@
 -- Stores of the pizza chain
 CREATE TABLE stores (
     store_id      SERIAL PRIMARY KEY,
-    name          VARCHAR(50) NOT NULL
+    name          VARCHAR(52) NOT NULL
 );
 
 -- Products (ingredients, beverages, extras)
@@ -156,36 +154,6 @@ CREATE TRIGGER trg_check_promotion_item
 -- VIEWS
 -- =====================================================================
 
--- View of each order with details and total
-CREATE VIEW vw_order_summary AS
-SELECT
-    o.order_id,
-    o.order_date,
-    c.name      AS client_name,
-    SUM(p.base_price * oi.quantity * (1 - COALESCE(pr.discount_percent,0)/100))
-        + SUM(prd.price * oi2.quantity * (1 - COALESCE(pr2.discount_percent,0)/100))
-        AS total_amount
-FROM orders o
-JOIN clients c ON o.client_id = c.client_id
-JOIN order_items oi ON o.order_id = oi.order_id
-JOIN pizzas p ON oi.pizza_id = p.pizza_id
-LEFT JOIN promotions pr ON pr.item_type='pizza' AND pr.item_id=p.pizza_id
-GROUP BY o.order_id, o.order_date, c.name;
-
--- View of pizza composition
-CREATE VIEW vw_pizza_composition AS
-SELECT
-    p.pizza_id,
-    p.name      AS pizza_name,
-    array_agg(pi.product_id) AS ingredient_ids
-FROM pizzas p
-LEFT JOIN pizza_ingredients pi ON p.pizza_id = pi.pizza_id
-GROUP BY p.pizza_id;
-
--- View of active promotions
-CREATE VIEW vw_active_promotions AS
-SELECT * FROM promotions
-WHERE CURRENT_DATE BETWEEN start_date AND end_date;
 
 -- =====================================================================
 -- ACCESS CONTROL
