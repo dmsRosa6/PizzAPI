@@ -8,18 +8,25 @@ CREATE TABLE stores (
     name          VARCHAR(52) NOT NULL
 );
 
+Create TYPE product_type as ENUM (    
+  'Beverages', 'PizzaBases', 'SaltyIngredients', 'SweetIngredients', 'Snacks', 'Desserts', 'Sauces' 
+);
+
 -- Products (ingredients, beverages, extras)
 CREATE TABLE products (
     product_id    SERIAL PRIMARY KEY,
     name          VARCHAR(100) NOT NULL,
-    price         NUMERIC(10,2) NOT NULL CHECK (price >= 0)
+    price         NUMERIC(10,2) NOT NULL CHECK (price >= 0),
+    type          product_type NOT NULL,
+    is_deleted    BOOLEAN   NOT NULL
 );
 
 -- Pizzas (composite items)
 CREATE TABLE pizzas (
     pizza_id      SERIAL PRIMARY KEY,
     name          VARCHAR(100) NOT NULL,
-    base_price    NUMERIC(10,2) NOT NULL CHECK (base_price >= 0)
+    base_price    NUMERIC(10,2) NOT NULL CHECK (base_price >= 0),
+    is_deleted    BOOLEAN NOT NULL
 );
 
 -- Link ingredients to pizzas
@@ -34,7 +41,8 @@ CREATE TABLE clients (
     client_id     SERIAL PRIMARY KEY,
     name          VARCHAR(60) NOT NULL,
     phone_number  VARCHAR(15) UNIQUE,
-    nif           VARCHAR(20) UNIQUE  -- Portuguese NIF as string
+    nif           VARCHAR(20) UNIQUE,
+    is_deleted BOOLEAN NOT NULL
 );
 
 -- Orders placed by clients
@@ -91,6 +99,7 @@ CREATE TABLE employees (
     name          VARCHAR(60) NOT NULL,
     salary        NUMERIC(10,2) CHECK (salary >= 0),
     store_id      INTEGER NOT NULL REFERENCES stores(store_id)
+    is_active    BOOLEAN NOT NULL
 );
 
 -- Employees who drive deliveries
@@ -112,10 +121,6 @@ CREATE TABLE store_staff (
     employee_id INTEGER PRIMARY KEY REFERENCES employees(employee_id),
     role        VARCHAR(30) NOT NULL CHECK (role IN ('cashier','cook','manager'))
 );
-
--- =====================================================================
--- PROMOTIONS: Discounts on products or pizzas
--- =====================================================================
 
 CREATE TABLE promotions (
     promotion_id     SERIAL PRIMARY KEY,

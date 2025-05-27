@@ -11,5 +11,7 @@ public partial class Product
 
     public decimal Price { get; set; }
 
+    public bool IsDeleted { get; set; }
+
     public virtual ICollection<Pizza> Pizzas { get; set; } = new List<Pizza>();
 }

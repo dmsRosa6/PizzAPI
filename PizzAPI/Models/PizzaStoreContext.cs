@@ -53,6 +53,8 @@ public partial class PizzaStoreContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.HasPostgresEnum("product_type", new[] { "Beverages", "PizzaBases", "SaltyIngredients", "SweetIngredients", "Snacks", "Desserts", "Sauces" });
+
         modelBuilder.Entity<Address>(entity =>
         {
             entity.HasKey(e => e.AddressId).HasName("addresses_pkey");
@@ -266,6 +268,7 @@ public partial class PizzaStoreContext : DbContext
             entity.Property(e => e.BasePrice)
                 .HasPrecision(10, 2)
                 .HasColumnName("base_price");
+            entity.Property(e => e.IsDeleted).HasColumnName("is_deleted");
             entity.Property(e => e.Name)
                 .HasMaxLength(100)
                 .HasColumnName("name");
@@ -296,6 +299,7 @@ public partial class PizzaStoreContext : DbContext
             entity.ToTable("products");
 
             entity.Property(e => e.ProductId).HasColumnName("product_id");
+            entity.Property(e => e.IsDeleted).HasColumnName("is_deleted");
             entity.Property(e => e.Name)
                 .HasMaxLength(100)
                 .HasColumnName("name");

@@ -18,4 +18,6 @@ public partial class Employee
     public virtual Store Store { get; set; } = null!;
 
     public virtual StoreStaff? StoreStaff { get; set; }
+
+    public bool IsActive { get; set; }
 }
