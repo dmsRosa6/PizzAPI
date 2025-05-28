@@ -1,3 +1,4 @@
+using System.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PizzAPI.Models;
@@ -35,8 +36,18 @@ namespace PizzAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateClient(Client client)
         {
+
             await _context.Clients.AddAsync(client);
-            await _context.SaveChangesAsync();
+
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DBConcurrencyException)
+            {
+                
+            }
 
             return CreatedAtAction(nameof(GetClient), new { id = client.ClientId }, client);
         }

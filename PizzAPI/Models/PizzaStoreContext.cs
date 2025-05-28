@@ -53,7 +53,9 @@ public partial class PizzaStoreContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.HasPostgresEnum("product_type", new[] { "Beverages", "PizzaBases", "SaltyIngredients", "SweetIngredients", "Snacks", "Desserts", "Sauces" });
+        modelBuilder
+            .HasPostgresEnum("order_status", new[] { "InProgress", "Delivered" })
+            .HasPostgresEnum("product_type", new[] { "Beverages", "PizzaBases", "SaltyIngredients", "SweetIngredients", "Snacks", "Desserts", "Sauces" });
 
         modelBuilder.Entity<Address>(entity =>
         {
@@ -65,6 +67,8 @@ public partial class PizzaStoreContext : DbContext
             entity.Property(e => e.DoorNumber)
                 .HasMaxLength(10)
                 .HasColumnName("door_number");
+            entity.Property(e => e.Latitude).HasColumnName("latitude");
+            entity.Property(e => e.Longitude).HasColumnName("longitude");
             entity.Property(e => e.MunicipalityId).HasColumnName("municipality_id");
             entity.Property(e => e.PostalCode)
                 .HasMaxLength(10)
@@ -88,6 +92,8 @@ public partial class PizzaStoreContext : DbContext
             entity.HasIndex(e => e.PhoneNumber, "clients_phone_number_key").IsUnique();
 
             entity.Property(e => e.ClientId).HasColumnName("client_id");
+            entity.Property(e => e.AddressId).HasColumnName("address_id");
+            entity.Property(e => e.IsDeleted).HasColumnName("is_deleted");
             entity.Property(e => e.Name)
                 .HasMaxLength(60)
                 .HasColumnName("name");
@@ -97,6 +103,11 @@ public partial class PizzaStoreContext : DbContext
             entity.Property(e => e.PhoneNumber)
                 .HasMaxLength(15)
                 .HasColumnName("phone_number");
+
+            entity.HasOne(d => d.Address).WithMany(p => p.Clients)
+                .HasForeignKey(d => d.AddressId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("clients_address_id_fkey");
         });
 
         modelBuilder.Entity<Delivery>(entity =>
@@ -164,6 +175,7 @@ public partial class PizzaStoreContext : DbContext
             entity.ToTable("employees");
 
             entity.Property(e => e.EmployeeId).HasColumnName("employee_id");
+            entity.Property(e => e.IsActive).HasColumnName("is_active");
             entity.Property(e => e.Name)
                 .HasMaxLength(60)
                 .HasColumnName("name");
@@ -191,13 +203,13 @@ public partial class PizzaStoreContext : DbContext
                 .HasMaxLength(30)
                 .HasColumnName("brand");
             entity.Property(e => e.DriverId).HasColumnName("driver_id");
+            entity.Property(e => e.IsDeleted).HasColumnName("is_deleted");
             entity.Property(e => e.LicensePlate)
                 .HasMaxLength(15)
                 .HasColumnName("license_plate");
 
             entity.HasOne(d => d.Driver).WithMany(p => p.Motorcycles)
                 .HasForeignKey(d => d.DriverId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("motorcycles_driver_id_fkey");
         });
 
@@ -333,9 +345,15 @@ public partial class PizzaStoreContext : DbContext
             entity.ToTable("stores");
 
             entity.Property(e => e.StoreId).HasColumnName("store_id");
+            entity.Property(e => e.AddressId).HasColumnName("address_id");
             entity.Property(e => e.Name)
                 .HasMaxLength(52)
                 .HasColumnName("name");
+
+            entity.HasOne(d => d.Address).WithMany(p => p.Stores)
+                .HasForeignKey(d => d.AddressId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("stores_address_id_fkey");
         });
 
         modelBuilder.Entity<StoreStaff>(entity =>

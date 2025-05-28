@@ -2,9 +2,33 @@
 -- TABLE DEFINITIONS
 -- =====================================================================
 
+-- Districts and Municipalities for address normalization
+CREATE TABLE districts (
+    district_id   SERIAL PRIMARY KEY,
+    name          VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE municipalities (
+    municipality_id SERIAL PRIMARY KEY,
+    name             VARCHAR(50) NOT NULL,
+    district_id      INTEGER NOT NULL REFERENCES districts(district_id)
+);
+
+-- Addresses for deliveries
+CREATE TABLE addresses (
+    address_id      SERIAL PRIMARY KEY,
+    street_name     TEXT NOT NULL,
+    postal_code     VARCHAR(10) NOT NULL,
+    door_number     VARCHAR(10),
+    municipality_id INTEGER NOT NULL REFERENCES municipalities(municipality_id),
+    latitude        DOUBLE PRECISION,
+    longitude       DOUBLE PRECISION
+);
+
 -- Stores of the pizza chain
 CREATE TABLE stores (
     store_id      SERIAL PRIMARY KEY,
+    address_id    INTEGER NOT NULL REFERENCES addresses(address_id),
     name          VARCHAR(52) NOT NULL
 );
 
@@ -42,6 +66,7 @@ CREATE TABLE clients (
     name          VARCHAR(60) NOT NULL,
     phone_number  VARCHAR(15) UNIQUE,
     nif           VARCHAR(20) UNIQUE,
+    address_id    INTEGER NOT NULL REFERENCES addresses(address_id),
     is_deleted BOOLEAN NOT NULL
 );
 
@@ -60,32 +85,16 @@ CREATE TABLE order_items (
     PRIMARY KEY (order_id, pizza_id)
 );
 
--- Districts and Municipalities for address normalization
-CREATE TABLE districts (
-    district_id   SERIAL PRIMARY KEY,
-    name          VARCHAR(50) NOT NULL
-);
-
-CREATE TABLE municipalities (
-    municipality_id SERIAL PRIMARY KEY,
-    name             VARCHAR(50) NOT NULL,
-    district_id      INTEGER NOT NULL REFERENCES districts(district_id)
-);
-
--- Addresses for deliveries
-CREATE TABLE addresses (
-    address_id      SERIAL PRIMARY KEY,
-    street_name     TEXT NOT NULL,
-    postal_code     VARCHAR(10) NOT NULL,
-    door_number     VARCHAR(10),
-    municipality_id INTEGER NOT NULL REFERENCES municipalities(municipality_id)
+CREATE TYPE order_status as ENUM(
+    'InProgress', 'Delivered'
 );
 
 -- Delivery orders (to be delivered to an address)
 CREATE TABLE deliveries (
     order_id      INTEGER PRIMARY KEY REFERENCES orders(order_id),
     address_id    INTEGER NOT NULL REFERENCES addresses(address_id),
-    delivered_at  TIMESTAMP       -- NULL until delivered
+    delivered_at  TIMESTAMP,
+    status        order_status NOT NULL
 );
 
 -- Take-away orders (client picks up)
@@ -98,14 +107,14 @@ CREATE TABLE employees (
     employee_id   SERIAL PRIMARY KEY,
     name          VARCHAR(60) NOT NULL,
     salary        NUMERIC(10,2) CHECK (salary >= 0),
-    store_id      INTEGER NOT NULL REFERENCES stores(store_id)
+    store_id      INTEGER NOT NULL REFERENCES stores(store_id),
     is_active    BOOLEAN NOT NULL
 );
 
 -- Employees who drive deliveries
 CREATE TABLE delivery_drivers (
     employee_id INTEGER PRIMARY KEY REFERENCES employees(employee_id),
-    licence     VARCHAR(20) UNIQUE  -- driver's licence
+    licence     VARCHAR(20) UNIQUE
 );
 
 -- Motorcycles assigned to drivers
@@ -113,7 +122,8 @@ CREATE TABLE motorcycles (
     motorcycle_id SERIAL PRIMARY KEY,
     license_plate VARCHAR(15) UNIQUE NOT NULL,
     brand         VARCHAR(30),
-    driver_id     INTEGER NOT NULL REFERENCES delivery_drivers(employee_id)
+    driver_id     INTEGER REFERENCES delivery_drivers(employee_id),
+    is_deleted    BOOLEAN NOT NULL
 );
 
 -- Employees working in-store (cashiers, cooks, managers)
@@ -165,24 +175,24 @@ CREATE TRIGGER trg_check_promotion_item
 -- =====================================================================
 
 -- Create roles
-CREATE ROLE client_role;
-CREATE ROLE staff_role;
-CREATE ROLE driver_role;
-CREATE ROLE manager_role;
+--CREATE ROLE client_role;
+--CREATE ROLE staff_role;
+--CREATE ROLE driver_role;
+--CREATE ROLE manager_role;
 
 -- Grant minimal privileges
-GRANT USAGE ON SCHEMA public TO client_role, staff_role, driver_role, manager_role;
+--GRANT USAGE ON SCHEMA public TO client_role, staff_role, driver_role, manager_role;
 
 -- Clients: can view menu and place orders
-GRANT SELECT ON products, pizzas, pizza_ingredients TO client_role;
-GRANT INSERT ON clients, orders, order_items, takeaway_orders TO client_role;
+--GRANT SELECT ON products, pizzas, pizza_ingredients TO client_role;
+--GRANT INSERT ON clients, orders, order_items, takeaway_orders TO client_role;
 
 -- Staff: can view and manage orders
-GRANT SELECT, UPDATE ON orders, order_items, deliveries TO staff_role;
+--GRANT SELECT, UPDATE ON orders, order_items, deliveries TO staff_role;
 
 -- Drivers: can view assigned deliveries
-GRANT SELECT ON deliveries TO driver_role;
-GRANT UPDATE ON deliveries TO driver_role;
+--GRANT SELECT ON deliveries TO driver_role;
+--GRANT UPDATE ON deliveries TO driver_role;
 
 -- Managers: full access to reporting and staff
-GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO manager_role;
+--GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO manager_role;

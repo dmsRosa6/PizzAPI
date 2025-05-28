@@ -11,6 +11,8 @@ public partial class Delivery
 
     public DateTime? DeliveredAt { get; set; }
 
+    public OrderStatus Status { get; set; }
+
     public virtual Address Address { get; set; } = null!;
 
     public virtual Order Order { get; set; } = null!;

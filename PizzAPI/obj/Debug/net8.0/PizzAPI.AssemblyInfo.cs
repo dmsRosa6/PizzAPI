@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("PizzAPI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9bc5e6756e271fa9529f04b64ecdccea6c17c3ec")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+19807f68b3d52d39f5a5cc2f2482ec66b16b7acc")]
 [assembly: System.Reflection.AssemblyProductAttribute("PizzAPI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("PizzAPI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

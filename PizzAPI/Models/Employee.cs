@@ -13,11 +13,11 @@ public partial class Employee
 
     public int StoreId { get; set; }
 
+    public bool IsActive { get; set; }
+
     public virtual DeliveryDriver? DeliveryDriver { get; set; }
 
     public virtual Store Store { get; set; } = null!;
 
     public virtual StoreStaff? StoreStaff { get; set; }
-
-    public bool IsActive { get; set; }
 }

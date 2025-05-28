@@ -1,2 +1,0 @@
-Trigger/ Soft delete para pizzas / products -> provavelmente soft delete é o mais inteligente. tipo pizza descontinuada.
-dar update aos modelos

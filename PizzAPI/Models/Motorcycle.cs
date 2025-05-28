@@ -11,7 +11,9 @@ public partial class Motorcycle
 
     public string? Brand { get; set; }
 
-    public int DriverId { get; set; }
+    public int? DriverId { get; set; }
 
-    public virtual DeliveryDriver Driver { get; set; } = null!;
+    public bool IsDeleted { get; set; }
+
+    public virtual DeliveryDriver? Driver { get; set; }
 }

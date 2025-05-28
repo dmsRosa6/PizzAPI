@@ -15,7 +15,15 @@ public partial class Address
 
     public int MunicipalityId { get; set; }
 
+    public double? Latitude { get; set; }
+
+    public double? Longitude { get; set; }
+
+    public virtual ICollection<Client> Clients { get; set; } = new List<Client>();
+
     public virtual ICollection<Delivery> Deliveries { get; set; } = new List<Delivery>();
 
     public virtual Municipality Municipality { get; set; } = null!;
+
+    public virtual ICollection<Store> Stores { get; set; } = new List<Store>();
 }

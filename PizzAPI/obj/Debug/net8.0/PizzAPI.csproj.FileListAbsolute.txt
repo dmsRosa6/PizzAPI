@@ -128,3 +128,8 @@
 /home/dmsrosa/Desktop/PizzaStore/PizzAPI/obj/Debug/net8.0/PizzAPI.pdb
 /home/dmsrosa/Desktop/PizzaStore/PizzAPI/obj/Debug/net8.0/PizzAPI.genruntimeconfig.cache
 /home/dmsrosa/Desktop/PizzaStore/PizzAPI/obj/Debug/net8.0/ref/PizzAPI.dll
+/home/dmsrosa/Desktop/PizzaStore/PizzAPI/bin/Debug/net8.0/Microsoft.OpenApi.dll
+/home/dmsrosa/Desktop/PizzaStore/PizzAPI/bin/Debug/net8.0/Swashbuckle.AspNetCore.Swagger.dll
+/home/dmsrosa/Desktop/PizzaStore/PizzAPI/bin/Debug/net8.0/Swashbuckle.AspNetCore.SwaggerGen.dll
+/home/dmsrosa/Desktop/PizzaStore/PizzAPI/bin/Debug/net8.0/Swashbuckle.AspNetCore.SwaggerUI.dll
+/home/dmsrosa/Desktop/PizzaStore/PizzAPI/obj/Debug/net8.0/PizzAPI.MvcApplicationPartsAssemblyInfo.cs
