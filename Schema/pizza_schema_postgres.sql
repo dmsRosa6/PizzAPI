@@ -86,7 +86,7 @@ CREATE TABLE order_items (
 );
 
 CREATE TYPE order_status as ENUM(
-    'InProgress', 'Delivered'
+    'Started', 'Delivered'
 );
 
 -- Delivery orders (to be delivered to an address)
@@ -196,3 +196,21 @@ CREATE TRIGGER trg_check_promotion_item
 
 -- Managers: full access to reporting and staff
 --GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO manager_role;
+
+
+-- =====================================================================
+-- Dummy fixed locations
+-- =====================================================================
+
+INSERT INTO districts (name) VALUES
+('Lisbon'),
+('Setubal');
+
+INSERT INTO municipalities (name, district_id) VALUES
+('Lisbon', 1),
+('Sintra', 1),
+('Oeiras', 1),
+('Amadora', 1),
+('Setubal', 2),
+('Almada', 2),
+('Sesimbra', 2);

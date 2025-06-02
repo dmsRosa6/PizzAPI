@@ -1,0 +1,5 @@
+Done:
+    Redis Service
+
+Todo:
+    Finish the order logic and tracking. Testing.

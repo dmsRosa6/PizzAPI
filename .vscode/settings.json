@@ -1,3 +1,7 @@
 {
-    "dotnet.defaultSolution": "PizzAPI.sln"
+    "dotnet.defaultSolution": "PizzAPI.sln",
+    "Lua.diagnostics.globals": [
+        "redis",
+        "cjson"
+    ]
 }

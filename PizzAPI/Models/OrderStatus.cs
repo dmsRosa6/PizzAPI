@@ -2,7 +2,9 @@ namespace PizzAPI.Models
 {
     public enum OrderStatus
     {
-        InProgress,
+        Started,
+        Cooking,
+        Delivering,
         Delivered       
     }
 }

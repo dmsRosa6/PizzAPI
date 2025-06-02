@@ -20,7 +20,7 @@ docker run --name $CONTAINER_NAME \
   -d postgres
 
 echo "⏳ Waiting for PostgreSQL to start..."
-sleep 5  # can adjust or make smarter with pg_isready
+sleep 5
 
 echo "📄 Copying SQL schema to container..."
 docker cp $SQL_FILE $CONTAINER_NAME:/schema.sql

@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using PizzAPI.Models;
+using PizzAPI.Services;
+using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,6 +9,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddDbContext<PizzaStoreContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("PizzaStoreConnection")));
+
+builder.Services.AddSingleton<IConnectionMultiplexer>(sp =>
+    ConnectionMultiplexer.Connect("localhost:6379"));
+builder.Services.AddScoped<IRedisService, RedisService>();
+
 
 // Swagger/OpenAPI
 builder.Services.AddEndpointsApiExplorer();
@@ -24,6 +31,9 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
+
+
+
 
 // Enable Swagger only in development
 if (app.Environment.IsDevelopment())

@@ -54,6 +54,7 @@ namespace PizzAPI.Controllers
             return Ok(orderItemsWithPizzas);
         }
 
+//TODO REDIS AND SOLVE NEW ADDRESS PROBLEM
         [HttpPost]
         public async Task<IActionResult> CreateOrder(OrderCreateRequest request)
         {
@@ -86,7 +87,7 @@ namespace PizzAPI.Controllers
                     {
                         OrderId   = order.OrderId,
                         AddressId = request.AddressId.Value,
-                        Status    = OrderStatus.InProgress
+                        Status    = OrderStatus.Started
                     });
                 }
                 else
