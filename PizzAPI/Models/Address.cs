@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
+using NetTopologySuite.Geometries;
 
 namespace PizzAPI.Models;
 
@@ -15,10 +18,11 @@ public partial class Address
 
     public int MunicipalityId { get; set; }
 
-    public double? Latitude { get; set; }
+    public double Latitude { get; set; }
 
-    public double? Longitude { get; set; }
+    public double Longitude { get; set; }
 
+    [JsonIgnore]
     public virtual ICollection<Client> Clients { get; set; } = new List<Client>();
 
     public virtual ICollection<Delivery> Deliveries { get; set; } = new List<Delivery>();

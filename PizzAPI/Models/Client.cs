@@ -13,11 +13,11 @@ public partial class Client
 
     public string? Nif { get; set; }
 
-    public int AddressId { get; set; }
+    public int? AddressId { get; set; }
 
     public bool IsDeleted { get; set; }
 
-    public virtual Address Address { get; set; } = null!;
+    public virtual Address? Address { get; set; }
 
     public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
 }

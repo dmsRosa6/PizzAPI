@@ -54,14 +54,20 @@ public partial class PizzaStoreContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder
-            .HasPostgresEnum("order_status", new[] { "InProgress", "Delivered" })
-            .HasPostgresEnum("product_type", new[] { "Beverages", "PizzaBases", "SaltyIngredients", "SweetIngredients", "Snacks", "Desserts", "Sauces" });
+            .HasPostgresEnum("order_status", new[] { "Started", "Delivered" })
+            .HasPostgresEnum("product_type", new[] { "Beverages", "PizzaBases", "SaltyIngredients", "SweetIngredients", "Snacks", "Desserts", "Sauces" })
+            .HasPostgresExtension("fuzzystrmatch")
+            .HasPostgresExtension("postgis")
+            .HasPostgresExtension("tiger", "postgis_tiger_geocoder")
+            .HasPostgresExtension("topology", "postgis_topology");
 
         modelBuilder.Entity<Address>(entity =>
         {
             entity.HasKey(e => e.AddressId).HasName("addresses_pkey");
 
             entity.ToTable("addresses");
+
+            entity.HasIndex(e => new { e.StreetName, e.PostalCode }, "idx_addresses_street_postal");
 
             entity.Property(e => e.AddressId).HasColumnName("address_id");
             entity.Property(e => e.DoorNumber)
@@ -106,7 +112,6 @@ public partial class PizzaStoreContext : DbContext
 
             entity.HasOne(d => d.Address).WithMany(p => p.Clients)
                 .HasForeignKey(d => d.AddressId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("clients_address_id_fkey");
         });
 

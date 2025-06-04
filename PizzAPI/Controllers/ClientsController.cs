@@ -1,7 +1,10 @@
 using System.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using PizzAPI.Dtos;
 using PizzAPI.Models;
+using NetTopologySuite.Geometries;
+using NetTopologySuite;
 
 namespace PizzAPI.Controllers
 {
@@ -16,41 +19,72 @@ namespace PizzAPI.Controllers
             _context = context;
         }
 
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Client>>> GetClients()
-        {
-            var clients = await _context.Clients
-                .ToListAsync();
-
-            return Ok(clients);
-        }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Client>> GetClient(int id)
+        public async Task<ActionResult<ClientDto>> GetClient(int id)
         {
-            var client = await _context.Clients.FindAsync(id);
-
+            Client? client = await _context.Clients.FindAsync(id);
+            if (client == null)
+            {
+                return NotFound();
+            }
             return Ok(client);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> CreateClient(Client client)
+        [HttpPost()]
+        public async Task<IActionResult> CreateClient(ClientCreateRequestDto clientDto)
         {
+            if (clientDto.Address == null)
+                return BadRequest("Address is required.");
+
+            // The check is done by comparing the street and what not aswell as checking coordinates
+             var geometryFactory = NtsGeometryServices.Instance.CreateGeometryFactory(srid: 4326);
+            var inputPoint = geometryFactory.CreatePoint(new Coordinate(clientDto.Address.Longitude, clientDto.Address.Latitude));
+            double maxDistanceMeters = 20;
+
+            var existingAddress = await _context.Addresses
+                    .Where(a =>
+                    a.StreetName == clientDto.Address.StreetName &&
+                    a.PostalCode == clientDto.Address.PostalCode &&
+                    a.DoorNumber == clientDto.Address.DoorNumber &&
+                    a.MunicipalityId == clientDto.Address.MunicipalityId 
+                ).FirstOrDefaultAsync();
+
+            Address addressToUse;
+
+            if (existingAddress != null)
+            {
+                addressToUse = existingAddress;
+            }
+            else
+            {
+                addressToUse = clientDto.Address.ToEntity();
+                await _context.Addresses.AddAsync(addressToUse);
+                await _context.SaveChangesAsync();
+            }
+
+            var client = new Client
+            {
+                Name = clientDto.Name,
+                PhoneNumber = clientDto.PhoneNumber,
+                Nif = clientDto.Nif,
+                AddressId = addressToUse.AddressId
+            };
 
             await _context.Clients.AddAsync(client);
-
 
             try
             {
                 await _context.SaveChangesAsync();
             }
-            catch (DBConcurrencyException)
+            catch (DbUpdateConcurrencyException)
             {
-                
+                return Conflict("A concurrency conflict occurred.");
             }
 
             return CreatedAtAction(nameof(GetClient), new { id = client.ClientId }, client);
         }
+
 
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateClient(int id, Client updatedClient)

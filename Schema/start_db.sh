@@ -17,7 +17,7 @@ docker run --name $CONTAINER_NAME \
   -e POSTGRES_PASSWORD=$DB_PASSWORD \
   -e POSTGRES_DB=$DB_NAME \
   -p 55432:5432 \
-  -d postgres
+  -d postgis/postgis:latest
 
 echo "⏳ Waiting for PostgreSQL to start..."
 sleep 5

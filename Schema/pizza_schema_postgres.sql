@@ -1,4 +1,10 @@
 -- =====================================================================
+-- EXTENSIONS
+-- =====================================================================
+
+CREATE EXTENSION IF NOT EXISTS postgis;
+
+-- =====================================================================
 -- TABLE DEFINITIONS
 -- =====================================================================
 
@@ -14,7 +20,7 @@ CREATE TABLE municipalities (
     district_id      INTEGER NOT NULL REFERENCES districts(district_id)
 );
 
--- Addresses for deliveries
+-- Addresses
 CREATE TABLE addresses (
     address_id      SERIAL PRIMARY KEY,
     street_name     TEXT NOT NULL,
@@ -22,7 +28,10 @@ CREATE TABLE addresses (
     door_number     VARCHAR(10),
     municipality_id INTEGER NOT NULL REFERENCES municipalities(municipality_id),
     latitude        DOUBLE PRECISION,
-    longitude       DOUBLE PRECISION
+    longitude       DOUBLE PRECISION,
+    geom            geography(Point, 4326) GENERATED ALWAYS AS (
+                        ST_SetSRID(ST_MakePoint(longitude, latitude), 4326)
+                    ) STORED
 );
 
 -- Stores of the pizza chain
@@ -66,7 +75,7 @@ CREATE TABLE clients (
     name          VARCHAR(60) NOT NULL,
     phone_number  VARCHAR(15) UNIQUE,
     nif           VARCHAR(20) UNIQUE,
-    address_id    INTEGER NOT NULL REFERENCES addresses(address_id),
+    address_id    INTEGER REFERENCES addresses(address_id),
     is_deleted BOOLEAN NOT NULL
 );
 
@@ -166,9 +175,16 @@ CREATE TRIGGER trg_check_promotion_item
     FOR EACH ROW EXECUTE FUNCTION check_promotion_item();
 
 -- =====================================================================
--- VIEWS
+-- INDEXES
 -- =====================================================================
 
+CREATE INDEX idx_addresses_geom ON addresses USING GIST(geom);
+
+CREATE INDEX idx_addresses_street_postal ON addresses(street_name, postal_code); 
+
+-- =====================================================================
+-- VIEWS
+-- =====================================================================
 
 -- =====================================================================
 -- ACCESS CONTROL
