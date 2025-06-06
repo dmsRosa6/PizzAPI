@@ -8,7 +8,10 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container
 builder.Services.AddControllers();
 builder.Services.AddDbContext<PizzaStoreContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("PizzaStoreConnection")));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("PizzaStoreConnection"),
+    npgsql => npgsql.UseNetTopologySuite()
+    )
+);
 
 builder.Services.AddSingleton<IConnectionMultiplexer>(sp =>
     ConnectionMultiplexer.Connect("localhost:6379"));

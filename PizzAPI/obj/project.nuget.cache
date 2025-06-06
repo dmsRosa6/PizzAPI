@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "9CLkqKqMlb5DQQkgWchCyp4lADNWw7WBvfmTf7TO4BM9f6mTuuRpsh6jN8Pm/+5ubOF8oSlFoodT8+L+uG017w==",
+  "dgSpecHash": "1oFJh7kpq+wg/65av1MF9n+EfubnDRM12k6qDsGa7B3x+OLjLgj+PgeuRFx5nnt4JUf2z0TQJSMm8MAj7j85pA==",
   "success": true,
   "projectFilePath": "/home/dmsrosa/Desktop/PizzaStore/PizzAPI/PizzAPI.csproj",
   "expectedPackageFiles": [
@@ -53,9 +53,12 @@
     "/home/dmsrosa/.nuget/packages/microsoft.win32.systemevents/6.0.0/microsoft.win32.systemevents.6.0.0.nupkg.sha512",
     "/home/dmsrosa/.nuget/packages/mono.texttemplating/3.0.0/mono.texttemplating.3.0.0.nupkg.sha512",
     "/home/dmsrosa/.nuget/packages/nettopologysuite/2.5.0/nettopologysuite.2.5.0.nupkg.sha512",
+    "/home/dmsrosa/.nuget/packages/nettopologysuite.io.postgis/2.1.0/nettopologysuite.io.postgis.2.1.0.nupkg.sha512",
     "/home/dmsrosa/.nuget/packages/nettopologysuite.io.sqlserverbytes/2.1.0/nettopologysuite.io.sqlserverbytes.2.1.0.nupkg.sha512",
     "/home/dmsrosa/.nuget/packages/npgsql/9.0.3/npgsql.9.0.3.nupkg.sha512",
     "/home/dmsrosa/.nuget/packages/npgsql.entityframeworkcore.postgresql/9.0.4/npgsql.entityframeworkcore.postgresql.9.0.4.nupkg.sha512",
+    "/home/dmsrosa/.nuget/packages/npgsql.entityframeworkcore.postgresql.nettopologysuite/9.0.4/npgsql.entityframeworkcore.postgresql.nettopologysuite.9.0.4.nupkg.sha512",
+    "/home/dmsrosa/.nuget/packages/npgsql.nettopologysuite/9.0.3/npgsql.nettopologysuite.9.0.3.nupkg.sha512",
     "/home/dmsrosa/.nuget/packages/pipelines.sockets.unofficial/2.2.8/pipelines.sockets.unofficial.2.2.8.nupkg.sha512",
     "/home/dmsrosa/.nuget/packages/stackexchange.redis/2.7.27/stackexchange.redis.2.7.27.nupkg.sha512",
     "/home/dmsrosa/.nuget/packages/swashbuckle.aspnetcore/8.1.2/swashbuckle.aspnetcore.8.1.2.nupkg.sha512",

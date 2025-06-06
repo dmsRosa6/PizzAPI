@@ -5,6 +5,7 @@ using PizzAPI.Dtos;
 using PizzAPI.Models;
 using NetTopologySuite.Geometries;
 using NetTopologySuite;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace PizzAPI.Controllers
 {
@@ -23,12 +24,17 @@ namespace PizzAPI.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<ClientDto>> GetClient(int id)
         {
-            Client? client = await _context.Clients.FindAsync(id);
+
+            Client? client = await _context.Clients
+                .Include(c => c.Address)
+                    .ThenInclude(a => a.Municipality)
+                        .ThenInclude(m => m.District)
+                .FirstOrDefaultAsync(c => c.ClientId == id);
             if (client == null)
             {
                 return NotFound();
             }
-            return Ok(client);
+            return Ok(ClientDto.FromEntity(client));
         }
 
         [HttpPost()]
@@ -38,7 +44,7 @@ namespace PizzAPI.Controllers
                 return BadRequest("Address is required.");
 
             // The check is done by comparing the street and what not aswell as checking coordinates
-             var geometryFactory = NtsGeometryServices.Instance.CreateGeometryFactory(srid: 4326);
+            var geometryFactory = NtsGeometryServices.Instance.CreateGeometryFactory(srid: 4326);
             var inputPoint = geometryFactory.CreatePoint(new Coordinate(clientDto.Address.Longitude, clientDto.Address.Latitude));
             double maxDistanceMeters = 20;
 
@@ -47,7 +53,8 @@ namespace PizzAPI.Controllers
                     a.StreetName == clientDto.Address.StreetName &&
                     a.PostalCode == clientDto.Address.PostalCode &&
                     a.DoorNumber == clientDto.Address.DoorNumber &&
-                    a.MunicipalityId == clientDto.Address.MunicipalityId 
+                    a.MunicipalityId == clientDto.Address.MunicipalityId &&
+                    a.Geom.IsWithinDistance(inputPoint, maxDistanceMeters)
                 ).FirstOrDefaultAsync();
 
             Address addressToUse;
@@ -82,7 +89,7 @@ namespace PizzAPI.Controllers
                 return Conflict("A concurrency conflict occurred.");
             }
 
-            return CreatedAtAction(nameof(GetClient), new { id = client.ClientId }, client);
+            return CreatedAtAction(nameof(GetClient), new { id = client.ClientId }, ClientDto.FromEntity(client));
         }
 
 

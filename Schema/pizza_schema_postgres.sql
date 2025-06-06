@@ -180,7 +180,8 @@ CREATE TRIGGER trg_check_promotion_item
 
 CREATE INDEX idx_addresses_geom ON addresses USING GIST(geom);
 
-CREATE INDEX idx_addresses_street_postal ON addresses(street_name, postal_code); 
+--in practice if cardinalities vary separate this into a municipality_id index alone and another with street name and postal code 
+CREATE INDEX idx_addresses_street_postal ON addresses(municipality_id, street_name, postal_code); 
 
 -- =====================================================================
 -- VIEWS

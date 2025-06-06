@@ -20,7 +20,7 @@ namespace PizzAPI.Dtos
             Name = client.Name,
             PhoneNumber = client.PhoneNumber,
             Nif = client.Nif,
-            Address = AddressDto.FromEntity(client.Address)
+            Address = client.Address == null?null:AddressDto.FromEntity(client.Address)
         };
     }
 }

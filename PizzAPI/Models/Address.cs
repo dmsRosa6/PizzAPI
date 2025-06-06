@@ -22,6 +22,10 @@ public partial class Address
 
     public double Longitude { get; set; }
 
+    [Column("geom")]
+    [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+    public Point Geom { get; set; } = null!;
+
     [JsonIgnore]
     public virtual ICollection<Client> Clients { get; set; } = new List<Client>();
 
